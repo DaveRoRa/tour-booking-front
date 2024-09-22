@@ -3,7 +3,7 @@ import { combineSlices, configureStore } from "@reduxjs/toolkit"
 import { setupListeners } from "@reduxjs/toolkit/query"
 import { counterSlice } from "../features/counter/counterSlice"
 import { quotesApiSlice } from "../features/quotes/quotesApiSlice"
-import { userSlice } from "./user-slice"
+import { getUserInfo, userSlice } from "./user-slice"
 import { tourRoutesApiSlice } from "./tour-routers-api-slice"
 
 // `combineSlices` automatically combines the reducers using
@@ -34,6 +34,7 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
   // configure listeners using the provided defaults
   // optional, but required for `refetchOnFocus`/`refetchOnReconnect` behaviors
   setupListeners(store.dispatch)
+  store.dispatch(getUserInfo())
   return store
 }
 

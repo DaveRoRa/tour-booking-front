@@ -1,4 +1,5 @@
 import axios from "axios"
+import { toast } from "react-toastify"
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_PUBLIC_BACK_ENDPOINT,
@@ -12,7 +13,7 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(undefined, function (error: any) {
   const preParsedMessage = error.response.data
   if (typeof preParsedMessage?.message === "string") {
-    error.message = preParsedMessage
+    error.message = preParsedMessage.message
   }
   if (Array.isArray(preParsedMessage.errors)) {
     const parsedMessage = preParsedMessage.errors
@@ -58,4 +59,10 @@ export const parseError = (error: any) => {
     data: getErrorData(error),
     status: getErrorStatus(error),
   }
+}
+
+export const toastError = (error: any) => {
+  const parsedError = parseError(error)
+  toast.error(parsedError.message)
+  return parsedError
 }

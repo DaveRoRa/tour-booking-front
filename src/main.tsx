@@ -10,6 +10,7 @@ import {
 import "react-toastify/ReactToastify.css"
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment"
 import { store } from "./app/store"
+import "typeface-nunito"
 import "./index.css"
 import ErrorPage from "./pages/error-page"
 import LoginPage from "./pages/login/page"
@@ -19,6 +20,10 @@ import { customTheme } from "./utils/theme"
 import { ToastContainer } from "react-toastify"
 import AllTourRoutesPage from "./pages/tour-routes/all/page"
 import OneTourRoutePage from "./pages/tour-routes/one/page"
+import MainLayout from "./components/layout/main/main-layout"
+import AuthLayout from "./components/layout/auth/auth-layout"
+import RegisterPage from "./pages/register/page"
+import ProfilePage from "./pages/profile/page"
 
 const router = createBrowserRouter([
   {
@@ -26,28 +31,47 @@ const router = createBrowserRouter([
     element: <Outlet />,
     errorElement: <ErrorPage />,
     children: [
-      { path: "", element: <Navigate to="/routes/all" /> },
       {
         path: "auth",
-        element: <Outlet />,
+        element: (
+          <AuthLayout>
+            <Outlet />
+          </AuthLayout>
+        ),
         children: [
           {
             path: "login",
             element: <LoginPage />,
           },
+          {
+            path: "register",
+            element: <RegisterPage />,
+          },
         ],
       },
       {
-        path: "routes",
-        element: <Outlet />,
+        path: "",
+        element: (
+          <MainLayout>
+            <Outlet />{" "}
+          </MainLayout>
+        ),
         children: [
+          { path: "", element: <Navigate to="/routes/all" /> },
+          { path: "profile", element: <ProfilePage /> },
           {
-            path: "all",
-            element: <AllTourRoutesPage />,
-          },
-          {
-            path: "find/:id",
-            element: <OneTourRoutePage />,
+            path: "routes",
+            element: <Outlet />,
+            children: [
+              {
+                path: "all",
+                element: <AllTourRoutesPage />,
+              },
+              {
+                path: "find/:id",
+                element: <OneTourRoutePage />,
+              },
+            ],
           },
         ],
       },
@@ -64,7 +88,7 @@ if (container) {
       <Provider store={store}>
         <ThemeProvider theme={customTheme}>
           <LocalizationProvider dateAdapter={AdapterMoment}>
-            <ToastContainer hideProgressBar />
+            <ToastContainer hideProgressBar autoClose={3000} closeOnClick />
             <CssBaseline />
             <RouterProvider router={router} />
           </LocalizationProvider>
