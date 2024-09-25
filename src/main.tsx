@@ -24,6 +24,9 @@ import MainLayout from "./components/layout/main/main-layout"
 import AuthLayout from "./components/layout/auth/auth-layout"
 import RegisterPage from "./pages/register/page"
 import ProfilePage from "./pages/profile/page"
+import CreateTourPage from "./pages/tour-routes/create/page"
+import AllBookingsPage from "./pages/bookings/all/page"
+import OneBookingPage from "./pages/bookings/one/page"
 
 const router = createBrowserRouter([
   {
@@ -70,6 +73,24 @@ const router = createBrowserRouter([
               {
                 path: "find/:id",
                 element: <OneTourRoutePage />,
+              },
+              {
+                path: "create",
+                element: <CreateTourPage />,
+              },
+            ],
+          },
+          {
+            path: "bookings",
+            element: <Outlet />,
+            children: [
+              {
+                path: "all",
+                element: <AllBookingsPage />,
+              },
+              {
+                path: "find/:id",
+                element: <OneBookingPage />,
               },
             ],
           },

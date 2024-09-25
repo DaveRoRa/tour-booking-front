@@ -11,13 +11,17 @@ import {
 import type { ReactNode } from "react"
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber"
 import ConfirmationNumberOutlinedIcon from "@mui/icons-material/ConfirmationNumberOutlined"
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined"
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined"
 import logotipo from "../../../assets/imagotipo-guruwalk.png"
 import SearchBarNavBar from "./search-bar-navbar"
 import LoginButton from "./login-button"
 import ButtonNavbar from "./button-navbar"
+import { useAppSelector } from "../../../app/hooks"
+import { selectUser } from "../../../app/user-slice"
 
 const TopNavBar = () => {
+  const { user } = useAppSelector(selectUser)
   return (
     <Toolbar sx={{ boxShadow: ({ shadows }) => shadows[4] }}>
       <Stack direction="row" width="100%" justifyContent="space-between">
@@ -50,6 +54,23 @@ const TopNavBar = () => {
             <ConfirmationNumberIcon fontSize="small" />
             Reservas
           </Link>
+          {user?.type === "super-admin" && (
+            <Link
+              sx={{
+                textDecoration: "none",
+                color: ({ palette }) => palette.grey[600],
+                fontWeight: 600,
+              }}
+              display="flex"
+              alignItems="center"
+              gap={1}
+              fontSize={14}
+              href="/routes/create"
+            >
+              <AddBoxOutlinedIcon fontSize="small" />
+              Nueva Ruta
+            </Link>
+          )}
           <LoginButton />
         </Stack>
       </Stack>
@@ -58,6 +79,7 @@ const TopNavBar = () => {
 }
 
 const BottomNavBar = () => {
+  const { user } = useAppSelector(selectUser)
   return (
     <AppBar sx={{ top: "auto", bottom: 0 }}>
       <Toolbar>
@@ -72,6 +94,13 @@ const BottomNavBar = () => {
             icon={<ConfirmationNumberOutlinedIcon />}
             label="Reservas"
           />
+          {user?.type === "super-admin" && (
+            <ButtonNavbar
+              icon={<AddBoxOutlinedIcon />}
+              label="Nueva Ruta"
+              href="/routes/create"
+            />
+          )}
           <LoginButton bottomBar />
         </Stack>
       </Toolbar>
@@ -86,7 +115,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
     <>
       <Stack>
         {isXs ? <BottomNavBar /> : <TopNavBar />}
-        <Container maxWidth='md'>
+        <Container maxWidth="md">
           <Stack p={2}>{children}</Stack>
         </Container>
       </Stack>
