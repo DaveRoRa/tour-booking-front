@@ -4,7 +4,7 @@ import { yupStringInteger, yupStringRequired } from "../../utils/validations"
 import FormikTextField from "../../components/form/text-input"
 import { Button, Link, Typography } from "@mui/material"
 import { useState } from "react"
-import { axiosInstance, parseError } from "../../utils/requests"
+import axiosInstance, { parseError } from "../../utils/requests"
 import { toast } from "react-toastify"
 
 type RegisterBody = {

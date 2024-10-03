@@ -1,4 +1,5 @@
 import * as yup from "yup"
+import type { CloudinaryMedia } from "../app/tour-routers-api-slice"
 
 export const yupInteger = yup
   .number()
@@ -36,12 +37,52 @@ const validateFileType = (file: any, acceptedTypes?: string[]): boolean => {
   return false
 }
 
+export const validateCloudinaryMedia = (obj: any): obj is CloudinaryMedia => {
+  if (typeof obj !== "object" || obj === null) {
+    return false
+  }
+
+  const requiredFields = [
+    "url",
+    "etag",
+    "tags",
+    "type",
+    "bytes",
+    "width",
+    "folder",
+    "format",
+    "height",
+    "version",
+    "asset_id",
+    "public_id",
+    "created_at",
+    "secure_url",
+    "version_id",
+    "placeholder",
+    "resource_type",
+    "original_filename",
+  ]
+
+  for (const field of requiredFields) {
+    if (!(field in obj)) {
+      return false
+    }
+  }
+
+  if (!Array.isArray(obj.tags)) {
+    return false
+  }
+
+  return true
+}
+
 const acceptedImages = ["image/jpeg", "image/jpg", "image/png", "image/gif"]
 
 export const yupImageRequired = yup
   .mixed()
   .test("fileType", "Tipo de archivo inválido", (value: any) => {
-    const isValid = validateFileType(value, acceptedImages)
+    const isValid =
+      validateFileType(value, acceptedImages) || validateCloudinaryMedia(value)
     return isValid
   })
   .required("Este campo es obligatorio")

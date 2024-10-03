@@ -94,7 +94,7 @@ export const customTheme = createTheme({
           textTransform: "none",
           boxShadow: "none",
           borderRadius: 8,
-          fontSize: 18,
+          fontSize: 14,
           fontWeight: 700,
         },
       },
@@ -196,6 +196,14 @@ export const customTheme = createTheme({
           "&::before": {
             boxShadow: theme.shadows[4],
           },
+        }),
+      },
+    },
+    MuiCircularProgress: {
+      styleOverrides: {
+        circle: ({ theme }) => ({
+          strokeLinecap: "round",
+          color: theme.palette.primary.light,
         }),
       },
     },

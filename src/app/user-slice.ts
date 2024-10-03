@@ -1,5 +1,5 @@
 import { toast } from "react-toastify"
-import { axiosInstance, toastError } from "../utils/requests"
+import axiosInstance, { toastError } from "../utils/requests"
 import { createAppSlice } from "./createAppSlice"
 import type { PayloadAction } from "@reduxjs/toolkit"
 
@@ -42,7 +42,7 @@ export const userSlice = createAppSlice({
         pending: state => {
           state.status = "loading"
         },
-        rejected: (state, { error }) => {
+        rejected: state => {
           state.status = "idle"
         },
         fulfilled: (state, { payload }) => {
@@ -53,7 +53,7 @@ export const userSlice = createAppSlice({
     ),
     getUserInfo: create.asyncThunk(
       async () => {
-        const results = await axiosInstance.get<UserType>("/auth/login")
+        const results = await axiosInstance.get<UserType>("/auth/user-info")
         return results.data
       },
       {

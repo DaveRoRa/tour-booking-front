@@ -12,10 +12,61 @@ import {
 } from "@mui/material"
 import { Add, Close } from "@mui/icons-material"
 import { useField } from "formik"
+import type { CloudinaryMedia } from "../../app/tour-routers-api-slice"
+import { validateCloudinaryMedia } from "../../utils/validations"
 
 interface FormikImageFieldProps {
   name: string
   required?: boolean
+}
+
+const ImageBox = ({
+  image,
+  index,
+  handleOnRemoveImg,
+}: {
+  image: File | CloudinaryMedia
+  index: number
+  handleOnRemoveImg: (index: number) => void
+}) => {
+  const isCloudinary = validateCloudinaryMedia(image)
+  const fileName = isCloudinary ? image.original_filename : image.name
+  return (
+    <Box position="relative" p={0.5}>
+      <Button
+        sx={{
+          minWidth: 0,
+          p: 0,
+          zIndex: 1,
+          position: "absolute",
+          top: 0,
+          right: 0,
+          "& .MuiButton-icon": {
+            ml: "auto",
+            mr: "auto",
+          },
+          width: "fit-content",
+          borderRadius: 1,
+        }}
+        onClick={() => handleOnRemoveImg(index)}
+        startIcon={<Close fontSize="small" />}
+      />
+      <ImageListItem
+        sx={{
+          borderRadius: 4,
+          overflow: "hidden",
+          boxShadow: ({ shadows }) => shadows[3],
+        }}
+      >
+        <img
+          src={isCloudinary ? image.url : URL.createObjectURL(image)}
+          alt={fileName}
+          loading="lazy"
+          style={{ borderRadius: 8 }}
+        />
+      </ImageListItem>
+    </Box>
+  )
 }
 
 const FormikImageField: React.FC<FormikImageFieldProps> = ({
@@ -23,9 +74,9 @@ const FormikImageField: React.FC<FormikImageFieldProps> = ({
   required,
 }) => {
   const [{ value: values = [] }, { error }, { setValue }] =
-    useField<File[]>(name)
+    useField<(File | CloudinaryMedia)[]>(name)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  console.log("David error :>> ", error)
+
   const handleFileUpload = (): void => {
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
@@ -70,40 +121,12 @@ const FormikImageField: React.FC<FormikImageFieldProps> = ({
         }}
       >
         {values.map((item, index) => (
-          <Box key={`${item.name}-${index}`} position="relative" p={0.5}>
-            <Button
-              sx={{
-                minWidth: 0,
-                p: 0,
-                zIndex: 1,
-                position: "absolute",
-                top: 0,
-                right: 0,
-                "& .MuiButton-icon": {
-                  ml: "auto",
-                  mr: "auto",
-                },
-                width: "fit-content",
-                borderRadius: 1,
-              }}
-              onClick={() => handleOnRemoveImg(index)}
-              startIcon={<Close fontSize="small" />}
-            />
-            <ImageListItem
-              sx={{
-                borderRadius: 4,
-                overflow: "hidden",
-                boxShadow: ({ shadows }) => shadows[3],
-              }}
-            >
-              <img
-                src={URL.createObjectURL(item)}
-                alt={item.name}
-                loading="lazy"
-                style={{ borderRadius: 8 }}
-              />
-            </ImageListItem>
-          </Box>
+          <ImageBox
+            image={item}
+            index={index}
+            handleOnRemoveImg={handleOnRemoveImg}
+            key={`${validateCloudinaryMedia(item) ? item.original_filename : item.name}-${index}`}
+          />
         ))}
         <label htmlFor="raised-button-file">
           <Box sx={{ width: "100%", height: "100%", p: 1 }}>

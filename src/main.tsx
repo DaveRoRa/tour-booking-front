@@ -18,8 +18,8 @@ import { CssBaseline, ThemeProvider } from "@mui/material"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { customTheme } from "./utils/theme"
 import { ToastContainer } from "react-toastify"
-import AllTourRoutesPage from "./pages/tour-routes/all/page"
-import OneTourRoutePage from "./pages/tour-routes/one/page"
+import AllTourRoutesPage from "./pages/tour-routes/findAll/page"
+import OneTourRoutePage from "./pages/tour-routes/findOne/page"
 import MainLayout from "./components/layout/main/main-layout"
 import AuthLayout from "./components/layout/auth/auth-layout"
 import RegisterPage from "./pages/register/page"
@@ -27,6 +27,7 @@ import ProfilePage from "./pages/profile/page"
 import CreateTourPage from "./pages/tour-routes/create/page"
 import AllBookingsPage from "./pages/bookings/all/page"
 import OneBookingPage from "./pages/bookings/one/page"
+import EditTourPage from "./pages/tour-routes/edit/page"
 
 const router = createBrowserRouter([
   {
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
               {
                 path: "create",
                 element: <CreateTourPage />,
+              },
+              {
+                path: "edit/:id",
+                element: <EditTourPage />,
               },
             ],
           },
