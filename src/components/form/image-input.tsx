@@ -101,7 +101,7 @@ const FormikImageField: React.FC<FormikImageFieldProps> = ({
 
   return (
     <Stack>
-      <InputLabel error={!!error} sx={{ mb: -1.5, ml: 2, zIndex: 1 }} shrink>
+      <InputLabel error={!!error} sx={{ mb: -2.5, ml: 2, zIndex: 1 }} shrink>
         Imágenes {required && "*"}
       </InputLabel>
 

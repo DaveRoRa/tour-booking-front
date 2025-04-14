@@ -1,6 +1,5 @@
 import {
   AppBar,
-  Container,
   Divider,
   Link,
   Stack,
@@ -115,9 +114,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
     <>
       <Stack>
         {isXs ? <BottomNavBar /> : <TopNavBar />}
-        <Container maxWidth="md">
-          <Stack p={2}>{children}</Stack>
-        </Container>
+        <Stack p={2}>{children}</Stack>
       </Stack>
     </>
   )

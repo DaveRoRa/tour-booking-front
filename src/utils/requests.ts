@@ -39,13 +39,14 @@ const getErrorMessage = (error: any) => {
   return "An error occured"
 }
 
-const getErrorStatus = (error: any) => {
+const getErrorStatus = (error: any, allowUnknownStatus?: boolean) => {
   if (!isNaN(Number.parseInt(error?.code))) {
     return Number.parseInt(error.code)
   }
   if (error?.response?.status) {
     return error.response.status
   }
+  if (allowUnknownStatus) return ""
   return 500
 }
 
@@ -55,11 +56,14 @@ const getErrorData = (error: any) => {
 
 export type ParsedErrorType = ReturnType<typeof parseError>
 
-export const parseError = (error: any) => {
+export const parseError = (
+  error: any,
+  options?: { allowUnknownStatus?: boolean },
+) => {
   return {
     message: getErrorMessage(error),
     data: getErrorData(error),
-    status: getErrorStatus(error),
+    status: getErrorStatus(error, options?.allowUnknownStatus),
   }
 }
 
@@ -72,11 +76,15 @@ export const toastError = (error: any) => {
 export const uploadMedia = async (file: File) => {
   const formData = new FormData()
   formData.append("file", file)
-  const response = await axiosInstance.post<CloudinaryMedia>("/media/upload", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      "Access-Control-Allow-Origin": "*",
+  const response = await axiosInstance.post<CloudinaryMedia>(
+    "/media/upload",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        "Access-Control-Allow-Origin": "*",
+      },
     },
-  })
+  )
   return response.data
 }

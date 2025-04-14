@@ -8,7 +8,7 @@ import { parseError } from "../../utils/requests"
 import { toast } from "react-toastify"
 import { useAppDispatch } from "../../app/hooks"
 import { loginUser } from "../../app/user-slice"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { yupStringRequired } from "../../utils/validations"
 
 const validationSchema = yup.object().shape({
@@ -22,6 +22,8 @@ const validationSchema = yup.object().shape({
 const LoginPage = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  console.log("sesearchParasarch :>> ", searchParams.get("previous_url"))
   const handleSubmit = async (
     values: {
       email: string
@@ -39,7 +41,10 @@ const LoginPage = () => {
       toast.error(parseError((response as any).error).message)
       formikHelpers.setSubmitting(false)
     } else {
-      navigate("/")
+      const previous_url = searchParams.get("previous_url")
+      const redirect_to =
+        previous_url && previous_url.startsWith("/") ? previous_url : "/"
+      navigate(redirect_to)
     }
   }
 

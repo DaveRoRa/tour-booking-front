@@ -5,6 +5,7 @@ import { counterSlice } from "../features/counter/counterSlice"
 import { quotesApiSlice } from "../features/quotes/quotesApiSlice"
 import { getUserInfo, userSlice } from "./user-slice"
 import { tourRoutesApiSlice } from "./tour-routers-api-slice"
+import { bookingsApiSlice } from "./bookings-api-slice"
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
@@ -13,6 +14,7 @@ const rootReducer = combineSlices(
   quotesApiSlice,
   userSlice,
   tourRoutesApiSlice,
+  bookingsApiSlice,
 )
 // Infer the `RootState` type from the root reducer
 export type RootState = ReturnType<typeof rootReducer>
@@ -28,6 +30,7 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
       return getDefaultMiddleware()
         .concat(quotesApiSlice.middleware)
         .concat(tourRoutesApiSlice.middleware)
+        .concat(bookingsApiSlice.middleware)
     },
     preloadedState,
   })

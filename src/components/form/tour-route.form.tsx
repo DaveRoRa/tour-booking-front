@@ -8,7 +8,6 @@ import {
 } from "@mui/material"
 import { FieldArray, Formik } from "formik"
 import * as yup from "yup"
-
 import { toast } from "react-toastify"
 import { Delete } from "@mui/icons-material"
 import { useNavigate } from "react-router-dom"
@@ -16,6 +15,7 @@ import {
   validateCloudinaryMedia,
   yupImageRequired,
   yupIntegerRequired,
+  yupString,
   yupStringRequired,
 } from "../../utils/validations"
 import axiosInstance, { parseError, uploadMedia } from "../../utils/requests"
@@ -26,10 +26,12 @@ import type {
   CloudinaryMedia,
   TourRouteType,
 } from "../../app/tour-routers-api-slice"
+import EnrichedText from "./enriched-text"
 
 type CreateRouteBody = {
   title: string
   duration: number | ""
+  description: string
   pictures: (File | CloudinaryMedia)[]
   available_times: string[]
 }
@@ -40,6 +42,7 @@ const validationSchema = yup.object().shape({
     20,
     "El tour debe ser de al menos 20 minutos",
   ),
+  description: yupString,
   pictures: yup
     .array()
     .of(yupImageRequired)
@@ -63,6 +66,7 @@ const initialValues: CreateRouteBody = {
   pictures: [],
   duration: "",
   available_times: [""],
+  description: "",
 }
 
 const TourRouteForm = ({ data }: { data?: TourRouteType }) => {
@@ -85,6 +89,7 @@ const TourRouteForm = ({ data }: { data?: TourRouteType }) => {
     if (
       values.title !== data!.title ||
       values.duration !== data!.duration ||
+      values.description !== data!.description ||
       values.available_times.length !== data!.available_times.length ||
       values.pictures.length !== data!.pictures.length
     ) {
@@ -113,18 +118,15 @@ const TourRouteForm = ({ data }: { data?: TourRouteType }) => {
         ).map(file => uploadMedia(file)),
       )
 
-      const response = await axiosInstance.post(
-        `/tour-routes/update/${data!.id}`,
-        {
-          ...values,
-          pictures: [
-            ...uploadedImages,
-            values.pictures.filter(image => validateCloudinaryMedia(image)),
-          ],
-        },
-      )
+      await axiosInstance.patch(`/tour-routes/update/${data!.id}`, {
+        ...values,
+        pictures: [
+          ...uploadedImages,
+          ...values.pictures.filter(image => validateCloudinaryMedia(image)),
+        ],
+      })
       toast.success("Ruta modificada con éxito")
-      navigate(`/routes/find/${response.data.data.id}`)
+      navigate(`/routes/find/${data!.id}`)
     } else {
       toast.info("No se modificó ningún campo")
     }
@@ -133,7 +135,7 @@ const TourRouteForm = ({ data }: { data?: TourRouteType }) => {
   const handleValidation = async (values: CreateRouteBody) => {
     try {
       if (data) {
-        await updateTour(data)
+        await updateTour(values)
       } else {
         await createTour(values)
       }
@@ -149,7 +151,7 @@ const TourRouteForm = ({ data }: { data?: TourRouteType }) => {
     updatedAt: "",
   }
   return (
-    <Stack>
+    <Stack gap={0.5}>
       <Typography mt={2} mb={1} variant="h4">
         Create a new Tour Route
       </Typography>
@@ -167,6 +169,7 @@ const TourRouteForm = ({ data }: { data?: TourRouteType }) => {
               type="integer"
               required
             />
+            <EnrichedText name="description" label="Descripción" />
             <FieldArray
               name="available_times"
               render={({ push, remove }) => (

@@ -22,6 +22,7 @@ import { logoutUser, selectUser } from "../../../app/user-slice"
 import ButtonNavbar from "./button-navbar"
 import { useState } from "react"
 import { Close } from "@mui/icons-material"
+import { useLocation } from "react-router-dom"
 
 const LoginButtonMenuTop = () => {
   const { user } = useAppSelector(selectUser)
@@ -128,6 +129,8 @@ const LoginButtonMenuBottom = () => {
 
 const LoginButton = ({ bottomBar }: { bottomBar?: boolean }) => {
   const { status, user } = useAppSelector(selectUser)
+  const location = useLocation()
+
   if (status === "loading") {
     if (bottomBar) {
       return (
@@ -161,7 +164,7 @@ const LoginButton = ({ bottomBar }: { bottomBar?: boolean }) => {
     if (bottomBar)
       return (
         <ButtonNavbar
-          href="/auth/login"
+          href={`/auth/login?previous_url=${location.pathname}`}
           icon={<LoginIcon />}
           label="Iniciar sesión"
         />
@@ -178,7 +181,7 @@ const LoginButton = ({ bottomBar }: { bottomBar?: boolean }) => {
         alignItems="center"
         gap={1}
         fontSize={14}
-        href="/auth/login"
+        href={`/auth/login?previous_url=${location.pathname}`}
       >
         <LoginIcon fontSize="small" />
         Iniciar sesión

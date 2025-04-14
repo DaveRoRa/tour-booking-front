@@ -28,6 +28,7 @@ import CreateTourPage from "./pages/tour-routes/create/page"
 import AllBookingsPage from "./pages/bookings/all/page"
 import OneBookingPage from "./pages/bookings/one/page"
 import EditTourPage from "./pages/tour-routes/edit/page"
+import CreateBooking from "./pages/bookings/create/page"
 
 const router = createBrowserRouter([
   {
@@ -97,6 +98,10 @@ const router = createBrowserRouter([
                 path: "find/:id",
                 element: <OneBookingPage />,
               },
+              {
+                path: "create/:tour_route_id/:date/:time",
+                element: <CreateBooking />,
+              },
             ],
           },
         ],
@@ -113,7 +118,7 @@ if (container) {
     <React.StrictMode>
       <Provider store={store}>
         <ThemeProvider theme={customTheme}>
-          <LocalizationProvider dateAdapter={AdapterMoment}>
+          <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="es">
             <ToastContainer hideProgressBar autoClose={3000} closeOnClick />
             <CssBaseline />
             <RouterProvider router={router} />

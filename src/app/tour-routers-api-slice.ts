@@ -27,6 +27,7 @@ export type TourRouteType = {
   //Representing minutes
   duration: number
   pictures: CloudinaryMedia[]
+  description: string
   available_times: string[]
   createdAt?: string
   updatedAt?: string
